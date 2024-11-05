@@ -59,15 +59,18 @@ impl Cube {
     fn calculate_uv(&self, hit_point: &Vec3, normal: &Vec3) -> (f32, f32) {
         let half_size = self.size / 2.0;
         let local_point = hit_point - self.center;
-
+    
         let (u, v) = if normal.x.abs() > 0.5 {
-            ((local_point.z + half_size) / self.size, (local_point.y + half_size) / self.size)
+            // Gira 180 grados en la dirección X
+            ((1.0 - (local_point.z + half_size) / self.size), (1.0 - (local_point.y + half_size) / self.size))
         } else if normal.y.abs() > 0.5 {
-            ((local_point.x + half_size) / self.size, (local_point.z + half_size) / self.size)
+            // Gira 180 grados en la dirección Y
+            ((1.0 - (local_point.x + half_size) / self.size), (1.0 - (local_point.z + half_size) / self.size))
         } else {
-            ((local_point.x + half_size) / self.size, (local_point.y + half_size) / self.size)
+            // Gira 180 grados en la dirección Z
+            ((1.0 - (local_point.x + half_size) / self.size), (1.0 - (local_point.y + half_size) / self.size))
         };
-
+    
         (u, v)
     }
 }

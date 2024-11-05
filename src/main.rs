@@ -39,48 +39,53 @@ fn main() {
     let dirt_texture = ImageReader::open("assets/dirt/dirt.png").unwrap().decode().unwrap();
     let podzol_top_texture = ImageReader::open("assets/dirt/dirt_podzol_top.png").unwrap().decode().unwrap();
     let podzol_side_texture = ImageReader::open("assets/dirt/dirt_podzol_side.png").unwrap().decode().unwrap();
+    let new_texture = ImageReader::open("assets/dirt/dirt_podzol_side.png").unwrap().decode().unwrap();
 
-    // Crear materiales para cada textura
-    let dirt_material = Material::new(
-        Color::black(),
-        1.0,
-        [0.9, 0.1, 0.0, 0.0],
-        1.0,
-        vec![Some(dirt_texture.clone())]
-    );
-
-    let podzol_top_material = Material::new(
-        Color::black(),
-        1.0,
-        [0.9, 0.1, 0.0, 0.0],
-        1.0,
-        vec![Some(podzol_top_texture.clone())]
-    );
-
-    let podzol_side_material = Material::new(
-        Color::black(),
-        1.0,
-        [0.9, 0.1, 0.0, 0.0],
-        1.0,
-        vec![Some(podzol_side_texture.clone())]
-    );
-
-    // Crear materiales para cada cara del cubo
-    let cube_materials = [
-        dirt_material.clone(),
-        dirt_material.clone(),
-        podzol_top_material.clone(),
-        dirt_material.clone(),
-        podzol_side_material.clone(),
-        podzol_side_material.clone(),
+    // Crear materiales para los cubos
+    let cube1_dirt = [
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(dirt_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(dirt_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_top_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(dirt_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_side_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_side_texture.clone())]),
     ];
 
-    let cube = Cube::new(Vec3::new(0.0, 0.0, -5.0), 1.0, cube_materials);
+    let cube2_dirt = [
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(dirt_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(dirt_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_top_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(dirt_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_side_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_side_texture.clone())]),
+    ];
 
+    let cube3_dirt = [
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(dirt_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(dirt_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_top_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(dirt_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_side_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_side_texture.clone())]),
+    ];
+
+    // Crear cubos con posiciones diferentes
+    //let cube1 = Cube::new(Vec3::new(-1.5, 0.0, -5.0), 1.0, cube1_dirt);
+    //let cube2 = Cube::new(Vec3::new(-0.5, 0.0, -5.0), 1.0, cube2_dirt);
+    //let cube3 = Cube::new(Vec3::new(1.5, 0.0, -5.0), 1.0, cube3_dirt);
+    // Crear una plataforma de 5x5 cubos usando el material cube1_dirt
+    let mut cubes = Vec::new();
+    let spacing = 1.0; // Espacio entre cubos ajustado para que no haya separación
+    for i in 0..5 {
+        for j in 0..5 {
+            let position = Vec3::new(i as f32 * spacing, -1.0, j as f32 * spacing - 5.0);
+            let cube = Cube::new(position, 1.0, cube1_dirt.clone());
+            cubes.push(cube);
+        }
+    }
     // Configurar la escena
-    let objects = vec![cube];
-    let light = Light::new(Vec3::new(5.0, 5.0, 5.0), Color::new(255.0, 255.0, 255.0), 1.0);
-    let scene = Scene::new(objects, Vec3::new(0.0, 5.0, 0.0));
+    let light = Light::new(Vec3::new(5.0, 10.0, 5.0), Color::new(255.0, 255.0, 255.0), 1.0);
+    let scene = Scene::new(cubes, Vec3::new(0.0, 5.0, 0.0));
 
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new()
