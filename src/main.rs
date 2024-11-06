@@ -1,4 +1,4 @@
-use nalgebra_glm::Vec3;
+use nalgebra_glm::{Vec3, cos, sin}; // Añadir cos y sin aquí
 use crate::color::Color;
 use crate::material::Material;
 use crate::scene::Scene;
@@ -12,6 +12,7 @@ use winit::event::{Event, WindowEvent, MouseButton, ElementState, MouseScrollDel
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
 use winit::dpi::PhysicalPosition;
+
 
 use image::io::Reader as ImageReader;
 use std::time::{Duration, Instant};
@@ -191,7 +192,7 @@ fn main() {
 
 
     //--------------------------------
-    //mesa de horno----------------
+        //mesa de horno----------------
 
     // Cargar texturas de la mesa de trabajo
     let furnace_front_on_texture = ImageReader::open("assets/furnace/furnace_front_on.png").unwrap().decode().unwrap();
@@ -215,20 +216,21 @@ fn main() {
     let furnace_cube = Cube::new(furnace_position, 1.0, cube_furnace);
     cubes.push(furnace_cube);
 
-    // Crear una fuente de luz para el horno en la posición especificada
+
+
+    // Inicializamos el ángulo y velocidad de la luz solar
+    let mut sun_angle: f32 = 0.0;
+    let sun_rotation_speed = 0.5; // Velocidad de rotación de la luz solar
+    let sun_light_intensity = 5.0; // Intensidad de la luz solar
+
+    // Crear la fuente de luz del horno
     let furnace_light = Light::new(
-        furnace_position + Vec3::new(0.0, 0.5, 0.0), // Posición de la luz ligeramente elevada
-        Color::new(255.0, 140.0, 0.0),               // Color cálido para el resplandor del horno
-        2.0                                          // Intensidad de la luz del horno
+        furnace_position + Vec3::new(0.0, 0.5, 0.0),
+        Color::new(255.0, 140.0, 0.0),
+        2.0,
     );
 
-    // Crear la luz principal
-    let main_light = Light::new(Vec3::new(5.0, 10.0, 5.0), Color::new(255.0, 255.0, 255.0), 1.0);
-
-    // Configurar la escena con ambas luces
-    let scene = Scene::new(cubes, vec![main_light, furnace_light]);
-
-    // Configurar la ventana, el búfer de píxeles y la cámara
+    // Configuración de la ventana, el búfer de píxeles y la cámara
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new()
         .with_title("Rust Graphics - Raytracer")
@@ -240,7 +242,7 @@ fn main() {
     let mut pixels = Pixels::new(WIDTH, HEIGHT, surface_texture).unwrap();
     let mut framebuffer = Framebuffer::new(WIDTH as usize, HEIGHT as usize);
 
-    let center_position = Vec3::new(2.0, 0.0, -3.0); // Centro de la plataforma de cubos
+    let center_position = Vec3::new(2.0, 0.0, -3.0);
     let mut distance_from_center = 10.0;
     let mut camera_yaw: f32 = 0.0;
     let mut camera_pitch: f32 = 0.0;
@@ -257,8 +259,10 @@ fn main() {
                 WindowEvent::CloseRequested => {
                     *control_flow = ControlFlow::Exit;
                 }
-                WindowEvent::MouseInput { button: MouseButton::Middle, state, .. } => {
-                    is_left_mouse_button_pressed = state == ElementState::Pressed;
+                WindowEvent::MouseInput { state, button, .. } => {
+                    if button == MouseButton::Left {
+                        is_left_mouse_button_pressed = state == ElementState::Pressed;
+                    }
                 }
                 WindowEvent::CursorMoved { position, .. } => {
                     if is_left_mouse_button_pressed {
@@ -286,6 +290,23 @@ fn main() {
                 if Instant::now() >= next_frame_time {
                     next_frame_time = Instant::now() + frame_duration;
 
+                    // Actualizar el ángulo de la luz solar
+                    sun_angle += sun_rotation_speed;
+                    let sun_x = 5.0 * sun_angle.cos();
+                    let sun_y = 10.0 * sun_angle.sin(); // Altura de la luz, moviéndose de arriba hacia abajo
+                    let sun_z = 5.0 * sun_angle.sin();
+
+                    // Configurar la luz del sol en posición circular
+                    let main_light = Light::new(
+                        Vec3::new(sun_x, sun_y, sun_z),
+                        Color::new(255.0, 255.0, 255.0),
+                        sun_light_intensity,
+                    );
+
+                    // Crear la escena con ambas luces (horno y luz solar en movimiento)
+                    let scene = Scene::new(cubes.clone(), vec![main_light, furnace_light.clone()]);
+
+                    // Actualizar la posición de la cámara y renderizar
                     let camera_position = Vec3::new(
                         center_position.x + distance_from_center * camera_yaw.cos() * camera_pitch.cos(),
                         center_position.y + distance_from_center * camera_pitch.sin(),
@@ -311,7 +332,6 @@ fn main() {
         window.request_redraw();
     });
 }
-
 
 // Función para copiar el contenido del framebuffer al array de píxeles
 fn render_framebuffer_to_pixels(framebuffer: &Framebuffer, frame: &mut [u8]) {
