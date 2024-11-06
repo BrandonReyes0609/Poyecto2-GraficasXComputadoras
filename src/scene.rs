@@ -1,16 +1,17 @@
 use crate::cube::Cube;
-use crate::ray_intersect::RayIntersect;  // Importa el rasgo RayIntersect
+use crate::ray_intersect::RayIntersect;
 use crate::intersect::Intersect;
+use crate::light::Light;  // Asegúrate de tener la estructura Light importada
 use nalgebra_glm::Vec3;
 
 pub struct Scene {
-    pub cubes: Vec<Cube>, // Cambiar de `spheres` a `cubes`
-    pub light_position: Vec3,
+    pub cubes: Vec<Cube>,        // Cubos en la escena
+    pub lights: Vec<Light>,      // Vector de luces en la escena
 }
 
 impl Scene {
-    pub fn new(cubes: Vec<Cube>, light_position: Vec3) -> Self {
-        Self { cubes, light_position }
+    pub fn new(cubes: Vec<Cube>, lights: Vec<Light>) -> Self {
+        Self { cubes, lights }
     }
 
     pub fn ray_intersect(&self, ray_origin: &Vec3, ray_direction: &Vec3) -> Option<Intersect> {

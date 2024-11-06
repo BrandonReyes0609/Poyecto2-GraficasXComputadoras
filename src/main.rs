@@ -163,7 +163,9 @@ fn main() {
     // fin libreria ------------------------------
 
 
-    //mesa de crafteo----------------
+
+
+    
     // Cargar texturas de la mesa de trabajo
     let crafting_table_front_texture = ImageReader::open("assets/crafting/crafting_table_front.png").unwrap().decode().unwrap();
     let crafting_table_side_texture = ImageReader::open("assets/crafting/crafting_table_side.png").unwrap().decode().unwrap();
@@ -183,15 +185,50 @@ fn main() {
     let crafting_table_position = Vec3::new(0.0 * spacing, 0.0, 2.0 * spacing - 5.0);
     let crafting_table_cube = Cube::new(crafting_table_position, 1.0, cube_crafting_table);
     cubes.push(crafting_table_cube);
+    //-------------------------------------------------------
+    //mesa de horno----------------
 
-    // fin mesa de crafteo ----------
 
 
-    
+    //--------------------------------
+    //mesa de horno----------------
+
+    // Cargar texturas de la mesa de trabajo
+    let furnace_front_on_texture = ImageReader::open("assets/furnace/furnace_front_on.png").unwrap().decode().unwrap();
+    let furnace_side_texture = ImageReader::open("assets/furnace/furnace_side.png").unwrap().decode().unwrap();
+    let furnace_top_texutre = ImageReader::open("assets/furnace/furnace_top.png").unwrap().decode().unwrap();
     // Configurar la escena
-    let light = Light::new(Vec3::new(5.0, 10.0, 5.0), Color::new(255.0, 255.0, 255.0), 1.0);
-    let scene = Scene::new(cubes, Vec3::new(0.0, 5.0, 0.0));
+    // Definir las coordenadas deseadas para el horno
+    let furnace_position = Vec3::new(0.0 * spacing, 0.0, 0.0 * spacing - 5.0);
 
+    // Crear el material del bloque de horno
+    let cube_furnace = [
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(furnace_front_on_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(furnace_side_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(furnace_top_texutre.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(furnace_top_texutre.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(furnace_front_on_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(furnace_side_texture.clone())]),
+    ];
+
+    // Crear el cubo de horno y añadirlo a la escena
+    let furnace_cube = Cube::new(furnace_position, 1.0, cube_furnace);
+    cubes.push(furnace_cube);
+
+    // Crear una fuente de luz para el horno en la posición especificada
+    let furnace_light = Light::new(
+        furnace_position + Vec3::new(0.0, 0.5, 0.0), // Posición de la luz ligeramente elevada
+        Color::new(255.0, 140.0, 0.0),               // Color cálido para el resplandor del horno
+        2.0                                          // Intensidad de la luz del horno
+    );
+
+    // Crear la luz principal
+    let main_light = Light::new(Vec3::new(5.0, 10.0, 5.0), Color::new(255.0, 255.0, 255.0), 1.0);
+
+    // Configurar la escena con ambas luces
+    let scene = Scene::new(cubes, vec![main_light, furnace_light]);
+
+    // Configurar la ventana, el búfer de píxeles y la cámara
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new()
         .with_title("Rust Graphics - Raytracer")
@@ -203,7 +240,6 @@ fn main() {
     let mut pixels = Pixels::new(WIDTH, HEIGHT, surface_texture).unwrap();
     let mut framebuffer = Framebuffer::new(WIDTH as usize, HEIGHT as usize);
 
-    // Control de cámara
     let center_position = Vec3::new(2.0, 0.0, -3.0); // Centro de la plataforma de cubos
     let mut distance_from_center = 10.0;
     let mut camera_yaw: f32 = 0.0;
@@ -241,7 +277,7 @@ fn main() {
                 WindowEvent::MouseWheel { delta, .. } => {
                     if let MouseScrollDelta::LineDelta(_, scroll) = delta {
                         distance_from_center -= scroll * zoom_speed;
-                        distance_from_center = distance_from_center.clamp(2.0, 20.0); // Limitar el rango de zoom
+                        distance_from_center = distance_from_center.clamp(2.0, 20.0);
                     }
                 }
                 _ => {}
@@ -262,7 +298,7 @@ fn main() {
                         Vec3::new(0.0, 1.0, 0.0),
                     );
 
-                    render(&mut framebuffer, &camera, &scene, &light);
+                    render(&mut framebuffer, &camera, &scene, &scene.lights);
                     render_framebuffer_to_pixels(&mut framebuffer, pixels.frame_mut());
 
                     if pixels.render().is_err() {
@@ -275,6 +311,7 @@ fn main() {
         window.request_redraw();
     });
 }
+
 
 // Función para copiar el contenido del framebuffer al array de píxeles
 fn render_framebuffer_to_pixels(framebuffer: &Framebuffer, frame: &mut [u8]) {
