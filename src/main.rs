@@ -115,6 +115,29 @@ fn main() {
     cubes.push(center_leaf_cube);
     //FIn hojs--------------------------------
 
+    // panal -----------
+    // Cargar texturas del panal de abejas
+    let bee_nest_front_texture = ImageReader::open("assets/bee_nest/bee_nest_front.png").unwrap().decode().unwrap();
+    let bee_nest_front_honey_texture = ImageReader::open("assets/bee_nest/bee_nest_front_honey.png").unwrap().decode().unwrap();
+    let bee_nest_side_texture = ImageReader::open("assets/bee_nest/bee_nest_side.png").unwrap().decode().unwrap();
+    let bee_nest_top_texture = ImageReader::open("assets/bee_nest/bee_nest_top.png").unwrap().decode().unwrap();
+
+    // Crear material para el bloque de panal de abejas
+    let cube_bee_nest = [
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(bee_nest_side_texture.clone())]), // Lado izquierdo
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(bee_nest_side_texture.clone())]), // Lado derecho
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(bee_nest_top_texture.clone())]),   // Arriba
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(bee_nest_front_texture.clone())]), // Abajo
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(bee_nest_front_honey_texture.clone())]), // Frente
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(bee_nest_side_texture.clone())]),  // Atrás
+    ];
+
+    // Posicionar el bloque de panal de abejas al lado del bloque de madera y debajo de la plataforma de hojas
+    let bee_nest_position = base_position + Vec3::new(1.0, 0.0, 0.0); // Ajusta la posición según tus necesidades
+    let bee_nest_cube = Cube::new(bee_nest_position, 1.0, cube_bee_nest.clone());
+    cubes.push(bee_nest_cube);
+    // fin panal ------------
+    
     // Configurar la escena
     let light = Light::new(Vec3::new(5.0, 10.0, 5.0), Color::new(255.0, 255.0, 255.0), 1.0);
     let scene = Scene::new(cubes, Vec3::new(0.0, 5.0, 0.0));
