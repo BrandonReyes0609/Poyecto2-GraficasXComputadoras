@@ -138,6 +138,56 @@ fn main() {
     cubes.push(bee_nest_cube);
     // fin panal ------------
     
+
+    // libreria -----------------------------------
+
+    // Cargar texturas de librería
+    let planks_texture = ImageReader::open("assets/planks_oak.png").unwrap().decode().unwrap();
+    let bookshelf_texture = ImageReader::open("assets/bookshelg/bookshelf.png").unwrap().decode().unwrap();
+
+    // Crear material para el cubo de librería
+    let cube_bookshelf = [
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(bookshelf_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(bookshelf_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(planks_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(planks_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(bookshelf_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(bookshelf_texture.clone())]),
+    ];
+
+    // Posición de la librería justo encima de la plataforma de tierra
+    //                                              ,arriba abajo,
+    let bookshelf_position = Vec3::new(0.0 * spacing, 0.0, 1.0 * spacing - 5.0);
+    let bookshelf_cube = Cube::new(bookshelf_position, 1.0, cube_bookshelf);
+    cubes.push(bookshelf_cube);
+    // fin libreria ------------------------------
+
+
+    //mesa de crafteo----------------
+    // Cargar texturas de la mesa de trabajo
+    let crafting_table_front_texture = ImageReader::open("assets/crafting/crafting_table_front.png").unwrap().decode().unwrap();
+    let crafting_table_side_texture = ImageReader::open("assets/crafting/crafting_table_side.png").unwrap().decode().unwrap();
+    let crafting_table_top_texture = ImageReader::open("assets/crafting/crafting_table_top.png").unwrap().decode().unwrap();
+
+    // Crear material para el cubo de la mesa de trabajo
+    let cube_crafting_table = [
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(crafting_table_side_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(crafting_table_side_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(crafting_table_top_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(crafting_table_top_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(crafting_table_front_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(crafting_table_front_texture.clone())]),
+    ];
+
+    // Posición del bloque de la mesa de trabajo en el centro de la plataforma de tierra
+    let crafting_table_position = Vec3::new(0.0 * spacing, 0.0, 2.0 * spacing - 5.0);
+    let crafting_table_cube = Cube::new(crafting_table_position, 1.0, cube_crafting_table);
+    cubes.push(crafting_table_cube);
+
+    // fin mesa de crafteo ----------
+
+
+    
     // Configurar la escena
     let light = Light::new(Vec3::new(5.0, 10.0, 5.0), Color::new(255.0, 255.0, 255.0), 1.0);
     let scene = Scene::new(cubes, Vec3::new(0.0, 5.0, 0.0));
