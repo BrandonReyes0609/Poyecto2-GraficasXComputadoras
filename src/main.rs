@@ -85,6 +85,36 @@ fn main() {
         cubes.push(wood_cube);
     }
 
+    //hojs-------------------------
+    // Cargar textura de hojas
+    let leaves_texture = ImageReader::open("assets/oak/leaves_oak_opaque.png").unwrap().decode().unwrap();
+
+    // Crear material para el cubo de hojas
+    let cube_leaves = [
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(leaves_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(leaves_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(leaves_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(leaves_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(leaves_texture.clone())]),
+        Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(leaves_texture.clone())]),
+    ];
+
+    // Posición de la plataforma de hojas (3x3) centrada sobre el bloque de madera más alto
+    let top_wood_position = base_position + Vec3::new(0.0, 3.0, 0.0); // Posición del bloque de madera más alto
+    for i in -1..=1 {
+        for j in -1..=1 {
+            let position = top_wood_position + Vec3::new(i as f32 * spacing, 0.0, j as f32 * spacing);
+            let leaf_cube = Cube::new(position, 1.0, cube_leaves.clone());
+            cubes.push(leaf_cube);
+        }
+    }
+
+    // Agregar un bloque de hojas adicional en el centro, encima de la plataforma de hojas
+    let center_leaf_position = top_wood_position + Vec3::new(0.0, 1.0, 0.0); // Posición en el centro, una unidad arriba
+    let center_leaf_cube = Cube::new(center_leaf_position, 1.0, cube_leaves.clone());
+    cubes.push(center_leaf_cube);
+    //FIn hojs--------------------------------
+
     // Configurar la escena
     let light = Light::new(Vec3::new(5.0, 10.0, 5.0), Color::new(255.0, 255.0, 255.0), 1.0);
     let scene = Scene::new(cubes, Vec3::new(0.0, 5.0, 0.0));
