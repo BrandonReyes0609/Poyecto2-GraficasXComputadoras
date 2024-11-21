@@ -76,7 +76,7 @@ pub fn cast_ray(
 
     Color::new(0.2, 0.7, 1.0) // Color de fondo
 }
-
+ 
 fn refract(incident: &Vec3, normal: &Vec3, eta_t: f32) -> Vec3 {
     let cosi = -incident.dot(normal).max(-1.0).min(1.0);
     let (n_cosi, eta, n_normal);

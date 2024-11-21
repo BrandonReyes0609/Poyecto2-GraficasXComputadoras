@@ -50,7 +50,7 @@ fn main() {
         Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_side_texture.clone())]),
         Material::new(Color::black(), 1.0, [0.9, 0.1, 0.0, 0.0], 1.0, vec![Some(podzol_side_texture.clone())]),
     ];
-
+ 
     // Crear la plataforma de tierra
     let mut cubes = Vec::new();
     let spacing = 1.0;
