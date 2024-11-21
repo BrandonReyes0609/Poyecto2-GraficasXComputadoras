@@ -227,8 +227,28 @@ fn main() {
     let furnace_light = Light::new(
         furnace_position + Vec3::new(0.0, 0.5, 0.0),
         Color::new(255.0, 140.0, 0.0),
-        2.0,
+        6.0,
     );
+    
+    /// Bloque de agua
+    // Bloque de agua con reflectividad
+    let water_texture = ImageReader::open("assets/water/cauldron_water.png").unwrap().decode().unwrap();
+
+    let water_material = core::array::from_fn(|_| {
+        Material::new(
+            Color::new(0.0, 0.0, 1.0), // Color azul para agua
+            1.0,                       // Especularidad alta
+            [0.1, 0.9, 0.0, 0.0],      // Albedo: 10% difuso, 90% reflectivo
+            1.33,                      // Índice de refracción para el agua
+            vec![Some(water_texture.clone())], // Textura
+        )
+    });
+
+    let water_position = Vec3::new(5.0, -1.0, -5.0); // Ajusta la posición según lo necesario
+    let water_cube = Cube::new(water_position, 1.0, water_material.clone());
+    cubes.push(water_cube);
+    ///Fin Bloque de agua
+
 
     // Configuración de la ventana, el búfer de píxeles y la cámara
     let event_loop = EventLoop::new();

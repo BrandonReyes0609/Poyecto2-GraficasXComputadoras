@@ -34,7 +34,13 @@ fn cast_shadow(
     shadow_intensity
 }
 
-pub fn cast_ray(scene: &Scene, ray_origin: &Vec3, ray_direction: &Vec3, light: &Light, depth: u32) -> Color {
+pub fn cast_ray(
+    scene: &Scene,
+    ray_origin: &Vec3,
+    ray_direction: &Vec3,
+    light: &Light,
+    depth: u32,
+) -> Color {
     if depth > 3 {
         return Color::new(0.2, 0.7, 1.0); // Color de fondo
     }
@@ -44,15 +50,31 @@ pub fn cast_ray(scene: &Scene, ray_origin: &Vec3, ray_direction: &Vec3, light: &
         let diffuse_intensity = intersection.normal.dot(&light_dir).max(0.0);
         let light_intensity = light.intensity;
 
-        // Usa get_texture_color para obtener el color difuso
-        let face_index = 0; // o el índice adecuado para la cara del cubo
-        let diffuse = intersection.material.get_texture_color(intersection.u, intersection.v, face_index) 
-            * intersection.material.albedo[0] * diffuse_intensity * light_intensity;
+        // Color difuso
+        let diffuse = intersection
+            .material
+            .get_texture_color(intersection.u, intersection.v, 0) // Usamos un índice predeterminado
+            * intersection.material.albedo[0]
+            * diffuse_intensity
+            * light_intensity;
 
-        return diffuse;
+        // Sombra
+        let shadow_intensity = cast_shadow(&intersection, light, &scene.cubes);
+        let diffuse_with_shadow = diffuse * shadow_intensity;
+
+        // Reflexión
+        let mut final_color = diffuse_with_shadow;
+        if intersection.material.albedo[1] > 0.0 {
+            let reflected_direction = reflect(ray_direction, &intersection.normal).normalize();
+            let reflected_color =
+                cast_ray(scene, &intersection.point, &reflected_direction, light, depth + 1);
+            final_color = final_color + reflected_color * intersection.material.albedo[1];
+        }
+
+        return final_color;
     }
 
-    Color::new(0.2, 0.7, 1.0)
+    Color::new(0.2, 0.7, 1.0) // Color de fondo
 }
 
 fn refract(incident: &Vec3, normal: &Vec3, eta_t: f32) -> Vec3 {
