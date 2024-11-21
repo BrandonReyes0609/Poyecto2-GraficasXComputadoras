@@ -244,9 +244,12 @@ fn main() {
         )
     });
 
-    let water_position = Vec3::new(5.0, -1.0, -5.0); // Ajusta la posición según lo necesario
-    let water_cube = Cube::new(water_position, 1.0, water_material.clone());
-    cubes.push(water_cube);
+    let base_position = Vec3::new(4.0, 1.0, -5.0); // Posición inicial
+    for i in 0..15 {
+        let water_position = base_position + Vec3::new(0.0, -i as f32, 0.0);
+        let water_cube = Cube::new(water_position, 1.0, water_material.clone());
+        cubes.push(water_cube);
+    }
     ///Fin Bloque de agua
 
 
