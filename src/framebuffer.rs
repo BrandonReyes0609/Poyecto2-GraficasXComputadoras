@@ -6,7 +6,7 @@ pub struct Framebuffer {
     pub height: usize,
     pub buffer: Vec<Vec3>,
 }
-
+ 
 impl Framebuffer {
     pub fn new(width: usize, height: usize) -> Self {
         let buffer = vec![Vec3::new(0.0, 0.0, 0.0); width * height];

@@ -6,7 +6,7 @@ pub struct Camera {
     pub center: Vec3,
     pub up: Vec3,
 }
-
+ 
 impl Camera {
     pub fn new(eye: Vec3, center: Vec3, up: Vec3) -> Self {
         Self { eye, center, up }

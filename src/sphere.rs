@@ -25,7 +25,7 @@ impl Sphere {
         (u, v)
     }
 }
-
+ 
 impl RayIntersect for Sphere {
     fn ray_intersect(&self, ray_origin: &Vec3, ray_direction: &Vec3) -> Option<Intersect> {
         let oc = ray_origin - self.center;

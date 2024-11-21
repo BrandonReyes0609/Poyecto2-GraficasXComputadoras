@@ -9,7 +9,7 @@ pub struct Material {
     pub refractive_index: f32,
     pub textures: Vec<Option<DynamicImage>>,
 }
-
+ 
 impl Material {
     pub fn new(
         diffuse: Color,

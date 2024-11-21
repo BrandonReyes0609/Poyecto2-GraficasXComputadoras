@@ -61,7 +61,7 @@ fn main() {
             cubes.push(cube);
         }
     }
-
+ 
     // Cargar texturas de madera
     let log_spruce_texture = ImageReader::open("assets/oak/log_spruce.png").unwrap().decode().unwrap();
     let log_spruce_top_texture = ImageReader::open("assets/oak/log_spruce_top.png").unwrap().decode().unwrap();

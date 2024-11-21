@@ -10,7 +10,7 @@ pub struct Intersect {
     pub u: f32,
     pub v: f32,
 }
-
+ 
 impl Intersect {
     pub fn new(point: Vec3, normal: Vec3, distance: f32, material: Material, u: f32, v: f32) -> Self {
         Self {

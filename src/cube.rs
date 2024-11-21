@@ -9,7 +9,7 @@ pub struct Cube {
     pub size: f32,
     pub materials: [Material; 6], // Material específico para cada cara del cubo
 }
-
+ 
 impl Cube {
     pub fn new(center: Vec3, size: f32, materials: [Material; 6]) -> Self {
         Self {

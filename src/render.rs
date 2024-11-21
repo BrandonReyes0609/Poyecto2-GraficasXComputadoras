@@ -24,4 +24,4 @@ pub fn render(framebuffer: &mut Framebuffer, camera: &Camera, scene: &Scene, lig
             framebuffer.set_pixel(x, y, color);
         }
     }
-}
+} 

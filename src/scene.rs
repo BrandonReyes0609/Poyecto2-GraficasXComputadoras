@@ -28,3 +28,4 @@ impl Scene {
         closest_intersection
     }
 }
+ 
